@@ -1,8 +1,16 @@
 import express  from "express";
+import dotenv from 'dotenv';
 import conectarDB from "./config/db.js";
-
-const app = express();
+import usuarioRoutes from "./routes/usuarioRoutes.js"
+const app = express(); // app conecntra toda la funcionalidad de express
+dotenv.config();
 conectarDB();
-app.listen(4000, () => {
-  console.log("servidor corriendo aca");
+
+// Routing 
+app.use("/api/usuarios", usuarioRoutes);
+
+const PORT = process.env.PORT || 4000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
 })
