@@ -1,4 +1,5 @@
 import Usuario from "../models/Usuario.js";
+import gererarId from "../helpers/generarId.js";
 
 const registrar = async (req, res) => {
   // evitar reg duplicados
@@ -14,10 +15,21 @@ const registrar = async (req, res) => {
 
   try {
     const usuario = new Usuario(req.body);
+    usuario.token = gererarId();
     const usuarioAlmacenado = await usuario.save();
     res.json(usuarioAlmacenado);
   } catch (error) {
     console.log(error);
   }
 };
-export { registrar };
+
+const autenticar = async (req, res) => {
+
+  const {email, password} = req.body
+ // Comprobar si el usurio existe
+  const usuario = await Usuario.findOne({email})
+  console.log(usuario);
+
+ // comprobar si esta confirmado
+}
+export { registrar, autenticar };
