@@ -1,5 +1,7 @@
 import Usuario from "../models/Usuario.js";
 import gererarId from "../helpers/generarId.js";
+import generarJWT from "../helpers/generarJWT.js";
+
 
 const registrar = async (req, res) => {
   // evitar reg duplicados
@@ -37,16 +39,20 @@ const autenticar = async (req, res) => {
     const error = new Error("El usuario no esta confirmado");
     return res.status(403).json({ msg: error.message})
   }
-  if(await usuario.comprobarPassword(password)) {
-    res.json({
+  // comprobar el password
+  if (!usuario.comprobarPassword(password)) {
+    const error = new Error("El password es incorrecto");
+    return res.status(403).json({ msg: error.message })
+  }
+  // generar el JWT
+  const token = generarJWT(usuario._id);
+  res.json(
+    {
       _id: usuario._id,
       nombre: usuario.nombre,
       email: usuario.email,
-    })
-  } else {
-    const error = new Error("El password es Incorrecto");
-    return res.status(403).json({ msg: error.message })
-  }
-
-}
+      token
+    }
+  )
+};
 export { registrar, autenticar };
